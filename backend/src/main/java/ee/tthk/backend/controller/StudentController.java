@@ -36,11 +36,11 @@ public class StudentController {
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
 
         // Update by Lombok
-        student.setFirst_name(studentDetails.getFirst_name());
-        student.setLast_name(studentDetails.getLast_name());
+        student.setFirstName(studentDetails.getFirstName());
+        student.setLastName(studentDetails.getLastName());
         student.setEmail(studentDetails.getEmail());
         student.setCourse(studentDetails.getCourse());
-        student.setEnrollment_date(studentDetails.getEnrollment_date());
+        student.setEnrollmentDate(studentDetails.getEnrollmentDate());
 
         Student updatedStudent = studentRepository.save(student);
         return ResponseEntity.ok(updatedStudent);

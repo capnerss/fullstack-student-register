@@ -20,10 +20,10 @@ public class Student {
     private Long id;
 
     @Column(nullable = false)
-    private String first_name;
+    private String firstName;
 
     @Column(nullable = false)
-    private String last_name;
+    private String lastName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -32,5 +32,5 @@ public class Student {
     private String course;
 
     @Column(nullable = false)
-    private LocalDate enrollment_date;
+    private LocalDate enrollmentDate;
 }
