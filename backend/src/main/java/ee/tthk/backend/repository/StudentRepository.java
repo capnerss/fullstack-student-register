@@ -1,4 +1,4 @@
-package repository;
+package ee.tthk.backend.repository;
 
 import ee.tthk.backend.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
