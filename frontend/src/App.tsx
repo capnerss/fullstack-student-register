@@ -10,17 +10,20 @@ function App() {
   const API_URL = 'http://localhost:8080/api/students';
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('id');
+  const [direction, setDirection] = useState<string>('asc');
 
   useEffect(() => {
     fetchStudents();
-  }, []);
+  }, [search, sortBy, direction]);
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(`${API_URL}?search=${search}&sortBy=${sortBy}&direction=${direction}`);
       setStudents(response.data);
     } catch (error) {
-      console.error('Error fetching students:', error);
+      console.error('Error fetching data:', error);
       setMessage('Failed to load students.');
     }
   };
@@ -59,13 +62,48 @@ function App() {
 
 
         {message && <p style={{ color: 'blue', fontWeight: 'bold' }}>{message}</p>}
+        {/* CONTROL PANEL: Search and Sort UI Tools */}
+        <div style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
+
+          {/* Search Input field */}
+          <div>
+            <label style={{ marginRight: '5px' }}>Search: </label>
+            <input
+                type="text"
+                placeholder="Type name or surname..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ padding: '5px', width: '200px' }}
+            />
+          </div>
+
+          {/* Sort By Column Dropdown */}
+          <div>
+            <label style={{ marginRight: '5px' }}>Sort By: </label>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ padding: '5px' }}>
+              <option value="id">ID</option>
+              <option value="firstName">First Name</option>
+              <option value="lastName">Last Name</option>
+              <option value="course">Course</option>
+              <option value="enrollmentDate">Enrollment Date</option>
+            </select>
+          </div>
+
+          {/* Sorting Direction Dropdown */}
+          <div>
+            <label style={{ marginRight: '5px' }}>Direction: </label>
+            <select value={direction} onChange={(e) => setDirection(e.target.value)} style={{ padding: '5px' }}>
+              <option value="asc">Ascending (A-Z)</option>
+              <option value="desc">Descending (Z-A)</option>
+            </select>
+          </div>
         <button
             onClick={() => { setSelectedStudent(null); setIsFormOpen(true); }}
             style={{ marginBottom: '15px' }}
         >
           Add New Student
         </button>
-
+        </div>
 
         <table border={1} cellPadding={10} style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
