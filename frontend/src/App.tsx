@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import type {Student} from "./interfaces/student.ts";
+import StudentForm from "./components/StudentForm.tsx";
 
 function App() {
 
   const [students, setStudents] = useState<Student[]>([]);
   const [message, setMessage] = useState<string>('');
   const API_URL = 'http://localhost:8080/api/students';
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   useEffect(() => {
     fetchStudents();
@@ -32,6 +35,23 @@ function App() {
       setMessage('Failed to delete student.');
     }
   };
+  // Edit
+  const handleEditClick = (student: Student) => {
+    setSelectedStudent(student);
+    setIsFormOpen(true);
+  };
+
+  const handleSaveSuccess = () => {
+    setMessage(selectedStudent ? 'Student updated successfully!' : 'Student added successfully!');
+    fetchStudents();
+    handleFormCancel();
+  };
+
+  // Cancel
+  const handleFormCancel = () => {
+    setSelectedStudent(null);
+    setIsFormOpen(false);
+  };
 
   return (
       <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -39,6 +59,12 @@ function App() {
 
 
         {message && <p style={{ color: 'blue', fontWeight: 'bold' }}>{message}</p>}
+        <button
+            onClick={() => { setSelectedStudent(null); setIsFormOpen(true); }}
+            style={{ marginBottom: '15px' }}
+        >
+          Add New Student
+        </button>
 
 
         <table border={1} cellPadding={10} style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -62,7 +88,7 @@ function App() {
                 <td>{student.enrollmentDate}</td>
                 <td>
 
-                  <button style={{ marginRight: '10px' }}>Edit</button>
+                  <button onClick={() => handleEditClick(student)} style={{ marginRight: '10px' }}>Edit</button>
                   <button onClick={() => student.id && deleteStudent(student.id)}>
                     Delete
                   </button>
@@ -71,6 +97,13 @@ function App() {
           ))}
           </tbody>
         </table>
+        {isFormOpen && (
+            <StudentForm
+                studentToEdit={selectedStudent}
+                onSaveSuccess={handleSaveSuccess}
+                onCancel={handleFormCancel}
+            />
+        )}
 
 
       </div>
