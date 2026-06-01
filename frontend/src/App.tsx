@@ -1,15 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-// Interface of a Student
-interface Student {
-  id?: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  course: string;
-  enrollmentDate: string;
-}
+import type {Student} from "./interfaces/student.ts";
 
 function App() {
 
