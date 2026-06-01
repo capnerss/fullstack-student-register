@@ -3,11 +3,13 @@ package ee.tthk.backend.controller;
 import ee.tthk.backend.model.Student;
 import ee.tthk.backend.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 // Cross-origin
 @CrossOrigin(origins = "http://localhost:5173")
@@ -20,19 +22,22 @@ public class StudentController {
 
     // READ:
     @GetMapping
-    public List<Student> getAllStudents(
+    public Page<Student> getAllStudents(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
 
         Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
 
-        if (search != null && !search.trim().isEmpty()) {
-            return studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search, search, sort);
-        }
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        return studentRepository.findAll(sort);
+        if (search != null && !search.trim().isEmpty()) {
+            return studentRepository.findAll(pageable);
+        }
+        return studentRepository.findAll(pageable);
     }
 
     // CREATE:

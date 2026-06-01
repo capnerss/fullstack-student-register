@@ -14,6 +14,9 @@ function App() {
   const [sortBy, setSortBy] = useState<string>('id');
   const [direction, setDirection] = useState<string>('asc');
   const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'dark');
+  const [page, setPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
   useEffect(() => {
     if (theme === 'light') {
       document.body.classList.add('light-theme');
@@ -29,12 +32,14 @@ function App() {
 
   useEffect(() => {
     fetchStudents();
-  }, [search, sortBy, direction]);
+  }, [search, sortBy, direction, page]);
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${API_URL}?search=${search}&sortBy=${sortBy}&direction=${direction}`);
-      setStudents(response.data);
+      const response = await axios.get(`${API_URL}?search=${search}&sortBy=${sortBy}&direction=${direction}&page=${page}&size=5`);
+
+      setStudents(response.data.content);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching data:', error);
       setMessage('Failed to load students.');
@@ -154,6 +159,29 @@ function App() {
           ))}
           </tbody>
         </table>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginTop: '15px' }}>
+          <button
+              className="btn-secondary"
+              onClick={() => setPage(prev => Math.max(prev - 1, 0))}
+              disabled={page === 0}
+              style={{ opacity: page === 0 ? 0.5 : 1, cursor: page === 0 ? 'not-allowed' : 'pointer' }}
+          >
+            ◀ Previous
+          </button>
+
+          <span style={{ fontWeight: 'bold' }}>
+                Page {page + 1} of {totalPages || 1}
+            </span>
+
+          <button
+              className="btn-secondary"
+              onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))}
+              disabled={page >= totalPages - 1}
+              style={{ opacity: page >= totalPages - 1 ? 0.5 : 1, cursor: page >= totalPages - 1 ? 'not-allowed' : 'pointer' }}
+          >
+            Next ▶
+          </button>
+        </div>
         {isFormOpen && (
             <div className="modal-backdrop">
             <StudentForm
