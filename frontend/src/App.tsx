@@ -13,6 +13,19 @@ function App() {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('id');
   const [direction, setDirection] = useState<string>('asc');
+  const [theme, setTheme] = useState<string>(localStorage.getItem('theme') || 'dark');
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   useEffect(() => {
     fetchStudents();
@@ -57,17 +70,25 @@ function App() {
   };
 
   return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <div >
         <h1>Student Register</h1>
 
+        <button
+            onClick={toggleTheme}
+            className="btn-secondary"
+            style={{ marginLeft: 'auto', padding: '6px 12px' }}
+        >
+          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        </button>
 
-        {message && <p style={{ color: 'blue', fontWeight: 'bold' }}>{message}</p>}
-        {/* CONTROL PANEL: Search and Sort UI Tools */}
+
+        {message && <p>{message}</p>}
+
         <div style={{ display: 'flex', gap: '15px', marginBottom: '20px', alignItems: 'center' }}>
 
-          {/* Search Input field */}
+
           <div>
-            <label style={{ marginRight: '5px' }}>Search: </label>
+            <label>Search: </label>
             <input
                 type="text"
                 placeholder="Type name or surname..."
@@ -77,9 +98,8 @@ function App() {
             />
           </div>
 
-          {/* Sort By Column Dropdown */}
           <div>
-            <label style={{ marginRight: '5px' }}>Sort By: </label>
+            <label>Sort By: </label>
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ padding: '5px' }}>
               <option value="id">ID</option>
               <option value="firstName">First Name</option>
@@ -89,9 +109,8 @@ function App() {
             </select>
           </div>
 
-          {/* Sorting Direction Dropdown */}
           <div>
-            <label style={{ marginRight: '5px' }}>Direction: </label>
+            <label>Direction: </label>
             <select value={direction} onChange={(e) => setDirection(e.target.value)} style={{ padding: '5px' }}>
               <option value="asc">Ascending (A-Z)</option>
               <option value="desc">Descending (Z-A)</option>
@@ -99,13 +118,13 @@ function App() {
           </div>
         <button
             onClick={() => { setSelectedStudent(null); setIsFormOpen(true); }}
-            style={{ marginBottom: '15px' }}
+
         >
           Add New Student
         </button>
         </div>
 
-        <table border={1} cellPadding={10} style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table border={1} cellPadding={10} >
           <thead>
           <tr style={{ backgroundColor: '#f2f2f2' }}>
             <th>First Name</th>
@@ -126,7 +145,7 @@ function App() {
                 <td>{student.enrollmentDate}</td>
                 <td>
 
-                  <button onClick={() => handleEditClick(student)} style={{ marginRight: '10px' }}>Edit</button>
+                  <button onClick={() => handleEditClick(student)} >Edit</button>
                   <button onClick={() => student.id && deleteStudent(student.id)}>
                     Delete
                   </button>
