@@ -56,39 +56,40 @@ const StudentForm: React.FC<StudentFormProps> = ({ studentToEdit, onSaveSuccess,
     };
 
     return (
-        <div style={{ border: '1px solid #ccc', padding: '15px', borderRadius: '5px', marginTop: '20px', maxWidth: '400px' }}>
+        <div className="form-container">
             <h3>{student.id ? 'Edit Student' : 'Add New Student'}</h3>
 
-            {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
+            {error && <p className="message" style={{ borderLeftColor: '#ef4444', color: '#f87171' }}>{error}</p>}
 
             <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '10px' }}>
+                <div className="form-field">
                     <label>First Name: </label>
                     <input type="text" name="firstName" value={student.firstName} onChange={handleChange} style={{ width: '100%' }} />
                 </div>
-                <div style={{ marginBottom: '10px' }}>
+                <div className="form-field">
                     <label>Last Name: </label>
                     <input type="text" name="lastName" value={student.lastName} onChange={handleChange} style={{ width: '100%' }} />
                 </div>
-                <div style={{ marginBottom: '10px' }}>
+                <div className="form-field">
                     <label>Email: </label>
                     <input type="email" name="email" value={student.email} onChange={handleChange} style={{ width: '100%' }} />
                 </div>
-                <div style={{ marginBottom: '10px' }}>
+                <div className="form-field">
                     <label>Course: </label>
                     <input type="text" name="course" value={student.course} onChange={handleChange} style={{ width: '100%' }} />
                 </div>
-                <div style={{ marginBottom: '15px' }}>
+                <div className="form-field">
                     <label>Enrollment Date: </label>
                     <input type="date" name="enrollmentDate" value={student.enrollmentDate} onChange={handleChange} style={{ width: '100%' }} />
                 </div>
-
-                <button type="submit" style={{ marginRight: '10px', backgroundColor: '#4CAF50', color: 'white', padding: '5px 10px' }}>
+                <div className="form-actions">
+                <button className="btn-secondary" type="submit">
                     {student.id ? 'Save Changes' : 'Add Student'}
                 </button>
-                <button type="button" onClick={onCancel} style={{ padding: '5px 10px' }}>
+                <button className="btn-primary" type="button" onClick={onCancel}>
                     Cancel
                 </button>
+                </div>
             </form>
         </div>
     );

@@ -155,11 +155,13 @@ function App() {
           </tbody>
         </table>
         {isFormOpen && (
+            <div className="modal-backdrop">
             <StudentForm
                 studentToEdit={selectedStudent}
                 onSaveSuccess={handleSaveSuccess}
                 onCancel={handleFormCancel}
             />
+            </div>
         )}
 
 
