@@ -3,6 +3,7 @@ package ee.tthk.backend.controller;
 import ee.tthk.backend.model.Student;
 import ee.tthk.backend.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,19 @@ public class StudentController {
 
     // READ:
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public List<Student> getAllStudents(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        if (search != null && !search.trim().isEmpty()) {
+            return studentRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search, search, sort);
+        }
+
+        return studentRepository.findAll(sort);
     }
 
     // CREATE:
